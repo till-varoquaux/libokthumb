@@ -1,0 +1,12 @@
+//-*- C++ -*-
+ENTRY(jpeg, quality, bounded_int<100>, 90, "jpeg encoding quality.")
+ENTRY(jpeg, dct_method, bounded_int<2>, 2,
+      "DCT algorithm. 0=Slow integer, 1=Fast Integer (inacurate), 2 = Float "
+      "(should be fast and accurate).")
+ENTRY(jpeg, dither_mode, bounded_int<2>, 2,
+      "0=no dither, 1=simple ordered dither, "
+      "2=Floyd-Steinberg error diffusion dither")
+ENTRY(jpeg, smoothing_factor, bounded_int<100>, 0,
+      "For the encoder. 1..100, or 0 for no input smoothing.")
+ENTRY(jpeg, optimize_coding, bool, false,
+      "Compute optimal Huffman coding table while compressing.")

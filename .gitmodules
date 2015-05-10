@@ -1,0 +1,12 @@
+[submodule "external/giflib"]
+	path = externals/giflib
+	url = git://git.code.sf.net/p/giflib/code
+[submodule "external/libjpeg-turbo"]
+	path = externals/libjpeg-turbo
+	url = https://github.com/svn2github/libjpeg-turbo.git
+[submodule "external/libyuv"]
+	path = externals/libyuv
+	url = https://chromium.googlesource.com/external/libyuv
+[submodule "external/libwebp"]
+	path = externals/libwebp
+	url = https://chromium.googlesource.com/webm/libwebp

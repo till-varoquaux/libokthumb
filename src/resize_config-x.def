@@ -1,0 +1,2 @@
+// -*- C++ -*-
+ENTRY(resize, scale_method, bounded_int<2>, 1, "0=Fastest, 1=Normal, 2=Best")

@@ -1,0 +1,49 @@
+#!/usr/bin/env python
+
+# Copyright (c) 2012 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+
+import glob
+import os
+import re
+import shlex
+import subprocess
+import string
+import sys
+import gyp
+
+#TODO: set --depth
+
+if __name__ == '__main__':
+  args = sys.argv[1:]
+
+  #gyp_helper.apply_chromium_gyp_env()
+
+  # This could give false positives since it doesn't actually do real option
+  # parsing.  Oh well.
+  gyp_file_specified = False
+  for arg in args:
+    if arg.endswith('.gyp'):
+      gyp_file_specified = True
+      break
+
+  # If we didn't get a file, check an env var, and then fall back to
+  # assuming 'all.gyp' from the same directory as the script.
+  if not gyp_file_specified:
+      args.append('libokthumb.gyp')
+
+
+  args.extend(['-I', 'gyp/common.gypi'])
+
+  # Never got that to work in common.gypi
+  args.extend(['-Dtarget_arch=x64'])
+
+  print 'Updating projects from gyp files...'
+  sys.stdout.flush()
+
+  # Off we go...
+  gyp_rc = gyp.main(args)
+
+  sys.exit(gyp_rc)
