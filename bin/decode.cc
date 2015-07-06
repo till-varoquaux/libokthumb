@@ -3,6 +3,7 @@
 #include "ppm_codec.h"
 #include "image_reader.h"
 #include <fstream>
+#include <cstdlib>
 
 // For testing purposes: read a whole file into a std::str
 static bool read_local_file(const std::string &filename, std::string *tgt) {
@@ -21,12 +22,14 @@ static bool read_local_file(const std::string &filename, std::string *tgt) {
 
 int main(int argc, char **argv) {
     if (argc != 2) {
-        FAIL("Usage: decode FILE");
+        std::cerr << "Usage: decode FILE" << std::endl;
+        return EXIT_FAILURE;
     }
     std::string src;
 
     if (!read_local_file(argv[1], &src)) {
-        FAIL("Failed to read file");
+        std::cerr << "Failed to read file" << std::endl;
+        return EXIT_FAILURE;
     }
 
     bool ok;
@@ -36,11 +39,14 @@ int main(int argc, char **argv) {
     auto reader = img::get_reader(src);
 
     if (!reader) {
-        FAIL("Failed to read image");
+        std::cerr << "Failed to read image" << std::endl;
+        return EXIT_FAILURE;
     }
 
     if (!reader->ok()) {
-        FAIL("failed to read the picture's header: " << reader->error());
+        std::cerr << "failed to read the picture's header: " << reader->error()
+                   << std::cerr;
+        return EXIT_FAILURE;
     }
 
     width = reader->src_width();
@@ -49,12 +55,14 @@ int main(int argc, char **argv) {
     Image img = reader->decode();
 
     if (!reader->ok()) {
-        FAIL("error while reading image: " << reader->error());
+        std::cerr << "error while reading image: " << reader->error()
+                  << std::endl;
+        return EXIT_FAILURE;
     }
 
     INFO_LOGGER << to_string(img.type()) << ":" << img.width() << "x"
                 << img.height() << std::endl;
 
     std::cout << encode_ppm(img) << std::endl;
-    return 0;
+    return EXIT_SUCCESS;
 }

@@ -36,5 +36,5 @@ std::ostream& get_logger(log_level lvl, const char *filename,
 
 [[noreturn]]
 void fatal_error() {
-    std::terminate();
+    std::abort();
 }
