@@ -3,7 +3,7 @@
 #include <cstring>
 #include <memory>
 #include "logging.h"
-#include "webp/encode.h"
+#include <externals/libwebp/src/webp/encode.h>
 
 namespace {
 int write_to_string(const uint8_t *data, size_t data_size,

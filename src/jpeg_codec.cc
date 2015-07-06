@@ -16,7 +16,7 @@
 
 extern "C" {
 #include <string.h>
-#include "jpegint.h"
+#include <externals/libjpeg-turbo/jpegint.h>
 }
 
 #include <csetjmp>

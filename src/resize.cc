@@ -1,6 +1,6 @@
 #include "resize.h"
 #include "resize_tmpl.h"
-#include "include/libyuv.h"
+#include <externals/libyuv/include/libyuv.h>
 
 // As of 1037:
 //  The yuv box filter is faster if width is a multiple of 16

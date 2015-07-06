@@ -7,7 +7,7 @@
 #include "bounded_int.h"
 
 extern "C" {
-#include "jpeglib.h"
+#include <externals/libjpeg-turbo/jpeglib.h>
 }
 
 namespace config {

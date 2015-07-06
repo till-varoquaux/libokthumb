@@ -1,17 +1,32 @@
+# -*- mode: python; tab-width: 2; python-indent: 2; indent-tabs-mode: nil; -*-
 # https://code.google.com/p/gyp/wiki/InputFormatReference
 {
     'includes': ['gyp/common.gypi'],
-    'targets': [
-    {
-          'target_name': 'libokthumb',
-          'dependencies': [
-                'gyp/libjpeg-turbo.gyp:libjpeg-turbo',
-                'gyp/giflib.gyp:giflib',
-                'externals/libyuv/libyuv.gyp:libyuv',
-                'gyp/libwebp.gyp:*'
-          ],
-          'type': 'static_library',
-          'sources': [
+    'variables': { 'libokthumb_maint_mode%': 0 },
+    'targets': [{
+        'target_name': 'libokthumb',
+        'dependencies': [
+            'gyp/libjpeg-turbo.gyp:libjpeg-turbo',
+            'gyp/giflib.gyp:giflib',
+            'externals/libyuv/libyuv.gyp:libyuv',
+            'gyp/libwebp.gyp:*'
+         ],
+         'conditions': [
+             ['libokthumb_maint_mode == 1', {
+                 'cflags': [
+                     '-O0',
+                     '-fno-omit-frame-pointer',
+                     '-Weverything',
+                     '-Wno-c++98-compat',
+                     '-Wno-padded',
+                     '-Wno-c++98-compat-pedantic',
+                     '-g',
+                     '--system-header-prefix=externals'
+                    ],
+                }]
+            ],
+            'type': 'static_library',
+            'sources': [
                 'src/aligned_storage.h',
                 'src/bounded_int.h',
                 'src/gif_codec.cc',
@@ -40,10 +55,10 @@
           ],
           'include_dirs': [
               'src',
-               '<(DEPTH)/externals/libjpeg-turbo'
+              '<(DEPTH)'
           ],
           "cflags": [
-               "-std=c++11"
+              "-std=c++11"
           ],
           'link_settings': {
               'libraries': ['-lpng']
@@ -53,18 +68,18 @@
                   'src',
               ],
               "cflags": [
-                   "-std=c++11"
+                  "-std=c++11"
               ]
            }
     },
     {
-           'target_name': 'decode',
-           'dependencies': ['libokthumb'],
-           'type': 'executable',
-           'sources': [ 'bin/decode.cc' ],
-           "cflags": [
-                "-std=c++11", "-lpng"
-           ]
+        'target_name': 'decode',
+        'dependencies': ['libokthumb'],
+        'type': 'executable',
+        'sources': [ 'bin/decode.cc' ],
+        "cflags": [
+            "-std=c++11", "-lpng"
+        ]
     }
-    ],
+    ]
 }

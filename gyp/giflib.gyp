@@ -20,12 +20,7 @@
         '<(src)/gif_err.c',
         '<(src)/gif_lib_private.h',
         '<(src)/quantize.c'
-      ],
-      'direct_dependent_settings': {
-          'include_dirs': [
-              '<(src)',
-          ],
-       }
+      ]
     }
   ]
 }

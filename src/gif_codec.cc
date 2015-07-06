@@ -17,7 +17,7 @@
  * and raster them until we hit we hit an extension with a delay.
  */
 extern "C" {
-#include "gif_lib.h"
+#include <externals/giflib/lib/gif_lib.h>
 }
 
 static const char *str_gif_error(int ErrorCode) {
