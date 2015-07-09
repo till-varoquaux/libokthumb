@@ -5,6 +5,7 @@
 #include <string>
 #include <csetjmp>
 #include "bounded_int.h"
+#include "convert.h"
 
 extern "C" {
 #include <externals/libjpeg-turbo/jpeglib.h>

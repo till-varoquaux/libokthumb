@@ -1,6 +1,7 @@
 #include "ppm_codec.h"
 #include <string>
 #include <sstream>
+#include "convert.h"
 
 extern "C" {
 #include <arpa/inet.h>

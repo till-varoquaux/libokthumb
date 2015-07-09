@@ -4,6 +4,8 @@
 #include "image_reader.h"
 #include <fstream>
 #include <cstdlib>
+#include "image.h"
+
 
 // For testing purposes: read a whole file into a std::str
 static bool read_local_file(const std::string &filename, std::string *tgt) {
@@ -32,10 +34,6 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    bool ok;
-    unsigned int width = 0;
-    unsigned int height = 0;
-
     auto reader = img::get_reader(src);
 
     if (!reader) {
@@ -48,9 +46,6 @@ int main(int argc, char **argv) {
                    << std::cerr;
         return EXIT_FAILURE;
     }
-
-    width = reader->src_width();
-    height = reader->src_height();
 
     Image img = reader->decode();
 

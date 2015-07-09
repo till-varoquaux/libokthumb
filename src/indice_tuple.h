@@ -6,6 +6,7 @@ namespace tuple_helper {
 // Taken from __tuple in libcxx. Used to do the "indices trick" in variadic
 // templates
 // http://loungecpp.wikidot.com/tips-and-tricks%3aindices
+// Should be deprecated by c++14
 
 // make_tuple_indices
 template <size_t...> struct tuple_indices {};
@@ -28,18 +29,38 @@ template <size_t _Ep, size_t _Sp = 0> struct make_tuple_indices {
   typedef typename __make_indices_imp<_Sp, tuple_indices<>, _Ep>::type type;
 };
 
+//==============================================================================
+
 template <class _Tp> typename std::decay<_Tp>::type decay_copy(_Tp &&__t) {
   return std::forward<_Tp>(__t);
 }
 
 template <typename... Ts> void swallow(Ts &&...) {}
 
-// True if all arguments are true...
+//==============================================================================
+// Replaced by fold expressions in c++17
 constexpr inline bool all() noexcept { return true; }
 
 template <typename... _REST>
 constexpr inline size_t all(const bool head, const _REST... rest) noexcept {
   return head && all(rest...);
+}
+
+template <typename _T>
+constexpr _T max(_T v) noexcept {
+  return v;
+}
+
+template <typename _T, typename... _REST>
+constexpr _T max(const _T head, const _REST... rest) noexcept {
+  return (head > max(rest...)) ? head : max(rest...);
+}
+
+constexpr inline size_t sum() noexcept { return 0; }
+
+template <typename... _REST>
+constexpr inline size_t sum(const size_t head, const _REST... rest) noexcept {
+  return head + sum(rest...);
 }
 
 } // tuple_helper

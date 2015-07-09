@@ -55,9 +55,14 @@ struct __attribute__((packed)) ARGBPixel {
 #endif
 };
 
-enum class ImageType : unsigned char { XRGB, YUV420, YUV444, GRAYSCALE };
+enum class ImageType : unsigned char {
+    XRGB,
+    YUV420,
+    YUV444,
+    GRAYSCALE  ///< AKA i400
+};
 
-constexpr bool is_plannar(ImageType ty) { return ty != ImageType::XRGB; }
+constexpr inline bool is_plannar(ImageType ty) { return ty != ImageType::XRGB; }
 
 const char *to_string(ImageType);
 
@@ -137,54 +142,3 @@ public:
     return nullptr;
   }
 };
-
-// TODO: better naming etc for this class
-struct inplace_t {};
-extern const inplace_t inplace;
-
-template <typename T_> class ConvRes {
-  bool ref_;
-  union {
-    const T_ *ptr_;
-    T_ val_;
-  };
-
-public:
-  template <typename... Args_>
-  ConvRes(const inplace_t &, Args_ &&... args)
-      : ref_(false) {
-    new (&val_) T_(std::forward<Args_>(args)...);
-  }
-
-  ConvRes(const T_ *ptr) : ref_(true), ptr_(ptr) {}
-
-  ConvRes(ConvRes &&l) : ref_(l.ref_) {
-    if (ref_) {
-      ptr_ = l.ptr_;
-    } else {
-      new (&val_) T_(std::forward<T_>(l.val_));
-    }
-  }
-
-  const T_ &operator*() { return (ref_) ? *ptr_ : val_; }
-
-  ~ConvRes() {
-    if (!ref_) {
-      val_.~T_();
-    }
-  }
-};
-
-GrayscaleImage to_grayscale(const Yuv420Image &);
-GrayscaleImage to_grayscale(const Yuv444Image &);
-
-XRGBImage to_xrgb(const Yuv420Image &);
-XRGBImage to_xrgb(const Yuv444Image &);
-XRGBImage to_xrgb(const GrayscaleImage &);
-
-Yuv420Image to_yuv420(const Yuv444Image &);
-Yuv420Image to_yuv420(const GrayscaleImage &);
-Yuv420Image to_yuv420(const XRGBImage &);
-
-ConvRes<Yuv420Image> to_yuv420(const Image &);
-ConvRes<XRGBImage> to_xrgb(const Image &);

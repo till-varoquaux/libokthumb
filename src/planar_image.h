@@ -23,25 +23,6 @@ template <unsigned int _VSAMP, unsigned int _HSAMP = _VSAMP> struct P {
 };
 
 //==============================================================================
-
-constexpr inline unsigned int _max() noexcept { return 0; }
-
-template <typename... _REST>
-constexpr inline unsigned int _max(const unsigned int head,
-                                   const _REST... rest) noexcept {
-  return (head > _max(rest...)) ? head : _max(rest...);
-}
-
-//==============================================================================
-
-constexpr inline size_t _sum() noexcept { return 0; }
-
-template <typename... _REST>
-constexpr inline size_t _sum(const size_t head, const _REST... rest) noexcept {
-  return head + _sum(rest...);
-}
-
-//==============================================================================
 // TODO
 
 class PlanarImageBase {
@@ -83,7 +64,7 @@ class PlanarImage : public PlanarImageBase {
 
   template <size_t... _Indices>
   size_t _offset(tuple_helper::tuple_indices<_Indices...>) const noexcept {
-    return _sum((height<_Indices>() * stride<_Indices>())...);
+      return tuple_helper::sum((height<_Indices>() * stride<_Indices>())...);
   }
 
   size_t size() const noexcept { return offset<sizeof...(DIMS_)>(); }
@@ -116,8 +97,8 @@ public:
 
   static constexpr ImageType type = IMAGE_TYPE_;
 
-  static constexpr unsigned int max_h_samp = _max(DIMS_::h...);
-  static constexpr unsigned int max_v_samp = _max(DIMS_::v...);
+  static constexpr unsigned int max_h_samp = tuple_helper::max(DIMS_::h...);
+  static constexpr unsigned int max_v_samp = tuple_helper::max(DIMS_::v...);
 
   template <size_t N_> using dim = _get_nth_dims<N_, DIMS_...>;
 

@@ -3,6 +3,7 @@
 #include <cstring>
 #include <memory>
 #include "logging.h"
+#include "convert.h"
 #include <externals/libwebp/src/webp/encode.h>
 
 namespace {
