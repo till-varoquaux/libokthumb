@@ -11,15 +11,25 @@ struct jpeg;
 class image_reader {
     std::string error_, warning_;
 
-protected:
+    friend struct ImgPipeline;
+public:
     struct dim_t {
-        unsigned int dst_width, dst_height, left_x, top_y, right_x, bottom_y;
-    };
+        unsigned int dst_width = 0, dst_height = 0, left_x = 0, top_y = 0,
+                     right_x = 0, // 0 means right edge
+                     bottom_y = 0;  // 0 means bottom edge
+        ColorSpace desired_color_space = ColorSpace::YUV420;
+        unsigned int width() const { return right_x - left_x; }
+        unsigned int height() const { return bottom_y - top_y; }
+    } dims;
 
+protected:
     void set_error(std::string &&);
     void set_warning(std::string &&);
 
     virtual Image decode_impl(const dim_t dims) = 0;
+
+    virtual void set_scale(unsigned int);
+    virtual unsigned int get_scale() const;
 
 public:
     enum img_type { JPEG, GIF, PNG };
@@ -44,12 +54,7 @@ public:
 
     virtual img_type file_type() const = 0;
 
-    Image decode(unsigned int top_left_x = 0, unsigned int top_left_y = 0,
-                 unsigned int bottom_right_x = 0,   // 0 means left edge
-                 unsigned int bottom_right_y = 0);  // 0 means bottom edge
-
-    virtual void set_scale(unsigned int);
-    virtual unsigned int get_scale() const;
+    Image decode();
 
     virtual ~image_reader();
 };

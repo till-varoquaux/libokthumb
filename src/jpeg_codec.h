@@ -6,19 +6,10 @@
 #include <csetjmp>
 #include "bounded_int.h"
 #include "convert.h"
-
+#include "config.h"
 extern "C" {
 #include <externals/libjpeg-turbo/jpeglib.h>
 }
-
-namespace config {
-struct jpeg {
-#define ENTRY(_section, _name, _type, _default, _docstring)                    \
-  _type _name = _type(_default);
-#include "jpeg_config-x.def"
-#undef ENTRY
-}; // sruct jpeg
-} // namespace config
 
 bool is_jpeg(const std::string &src);
 

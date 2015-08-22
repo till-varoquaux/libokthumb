@@ -33,10 +33,10 @@
                 'src/image_reader.cc',
                 'src/jpeg_codec.cc',
                 'src/logging.cc',
+                'src/okthumb.cc',
                 'src/png_codec.cc',
                 'src/ppm_codec.cc',
                 'src/resize.cc',
-                'src/resize.h',
                 'src/webp_codec.cc',
           ],
           'include_dirs': [

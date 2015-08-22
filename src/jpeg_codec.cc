@@ -13,6 +13,7 @@
 #include "image.h"
 #include "jpeg_codec.h"
 #include "aligned_storage.h"
+#include "config.h"
 
 extern "C" {
 #include <string.h>
@@ -313,10 +314,8 @@ src_colorspace colorspace(const struct jpeg_decompress_struct &dinfo) {
 ////////////////////////////////////////////////////////////////////////////////
 // Planar decoding
 
-// TODO: make a direct version of that function for when the
-// scaled_width == dst_width...
 template <typename _IMG> Image jpeg_reader::planar_decode(dim_t const dims) {
-  _IMG res(dims.dst_width, dims.dst_height);
+  _IMG res(dims.width(), dims.height());
   dinfo_.raw_data_out = true;
 
   const int scaled_dctsize =
@@ -386,8 +385,8 @@ Image jpeg_reader::fancy_decode(const dim_t dims) {
 
   dinfo_.out_color_space = PACKED_XRGB;
   dinfo_.output_components = 4;
-  res = XRGBImage(dims.dst_width, dims.dst_height);
-  XRGBImage *rgbx = res.val<ImageType::XRGB>();
+  res = XRGBImage(dims.width(), dims.height());
+  XRGBImage *rgbx = res.val<ColorSpace::XRGB>();
 
   Aligned<unsigned char> src_line_buf(
       scaled_width() * static_cast<uint>(dinfo_.output_components));
@@ -415,7 +414,7 @@ Image jpeg_reader::fancy_decode(const dim_t dims) {
   while (dinfo_.output_scanline < dims.bottom_y) {
     const unsigned int idx = dinfo_.output_scanline - dims.top_y;
     jpeg_read_scanlines(&dinfo_, outbuf, 1);
-    memcpy(rgbx->row<0>(idx), orig, dims.dst_width * sizeof(ARGBPixel));
+    memcpy(rgbx->row<0>(idx), orig, dims.width() * sizeof(ARGBPixel));
   }
 
   /* Clean it all up */
@@ -505,7 +504,7 @@ void jpeg_string_dest::TermDestination(j_compress_ptr cinfo) {
 
 namespace {
 
-template <J_COLOR_SPACE _COLOR_SPACE, ImageType _Ty, typename _PIXEL_TYPE,
+template <J_COLOR_SPACE _COLOR_SPACE, ColorSpace _Ty, typename _PIXEL_TYPE,
           typename... _PLANE_DIMS>
 std::string
 encode_planar(const PlanarImage<_Ty, _PIXEL_TYPE, _PLANE_DIMS...> &img,
@@ -568,8 +567,8 @@ encode_planar(const PlanarImage<_Ty, _PIXEL_TYPE, _PLANE_DIMS...> &img,
 } // namespace
 
 std::string encode_jpeg(const Image &img, const config::jpeg &config) {
-  if (img.type() == ImageType::GRAYSCALE) {
-    return encode_planar<JCS_GRAYSCALE>(*img.val<ImageType::GRAYSCALE>(),
+  if (img.type() == ColorSpace::GRAYSCALE) {
+    return encode_planar<JCS_GRAYSCALE>(*img.val<ColorSpace::GRAYSCALE>(),
                                         config);
   } else {
     return encode_planar<JCS_YCbCr>(*to_yuv420(img), config);

@@ -4,6 +4,7 @@
 #include "image_reader.h"
 #include <fstream>
 #include <cstdlib>
+#include <iostream>
 #include "image.h"
 
 

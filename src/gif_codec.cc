@@ -102,14 +102,14 @@ Image gif_reader::decode_impl(dim_t dims) {
     return Image();
   }
 
-  XRGBImage res(dims.dst_width, dims.dst_height);
+  XRGBImage res(dims.width(), dims.height());
 
   // This would probably be faster if we grabbed whole lines at once.
-  for (unsigned int i = 0; i < dims.dst_height; i++) {
+  for (unsigned int i = 0; i < dims.height(); i++) {
     ARGBPixel *row = res.row<0>(i);
     const GifByteType *src =
         &gif_img.RasterBits[(dims.top_y + i) * scaled_width() + dims.left_x];
-    for (unsigned int j = 0; j < dims.dst_width; j++) {
+    for (unsigned int j = 0; j < dims.width(); j++) {
       auto ColorMapEntry = &ColorMap->Colors[src[j]];
       // We are not bothering to check whether this is the transparent
       // color.

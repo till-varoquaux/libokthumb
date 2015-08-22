@@ -6,6 +6,7 @@
 #include "gif_codec.h"
 #include "png_codec.h"
 #include "logging.h"
+#include "config.h"
 
 void image_reader::set_scale(unsigned int) {}
 
@@ -25,28 +26,19 @@ unsigned int image_reader::scaled_height() const {
     return up_div(src_height(), get_scale());
 }
 
-Image image_reader::decode(unsigned int left_x, unsigned int top_y,
-                           unsigned int right_x, unsigned int bottom_y) {
+Image image_reader::decode() {
     if (!ok()) {
         return Image();
     }
 
-    dim_t dims;
-    if (right_x == 0) right_x = src_width();
-    if (bottom_y == 0) bottom_y = src_height();
+    if (dims.right_x == 0) dims.right_x = src_width();
+    if (dims.bottom_y == 0) dims.bottom_y = src_height();
 
-    unsigned int scale = get_scale();
-    dims.left_x = left_x / scale;
-    dims.top_y = top_y / scale;
-    dims.right_x = right_x / scale;
-    dims.bottom_y = bottom_y / scale;
-
-    if (dims.right_x > scaled_width() || dims.right_x <= dims.left_x ||
-        dims.bottom_y > scaled_height() || dims.bottom_y <= dims.top_y) {
+    if (dims.right_x > src_width() || dims.right_x <= dims.left_x ||
+        dims.bottom_y > src_height() || dims.bottom_y <= dims.top_y) {
         INFO_LOGGER << "Crop square error info:\n"
                     << "scale: " << get_scale()
                     << "\nsrc_width: " << src_width()
-                    << "\nwidth:" << scaled_width() << ", height:" << scaled_height()
                     << "\nleft-x:" << dims.left_x << " ,top-y:" << dims.top_y
                     << "\nright-x:" << dims.right_x
                     << " ,bottom_y:" << dims.bottom_y << std::endl;
@@ -54,8 +46,18 @@ Image image_reader::decode(unsigned int left_x, unsigned int top_y,
         return Image();
     }
 
-    dims.dst_width = dims.right_x - dims.left_x;
-    dims.dst_height = dims.bottom_y - dims.top_y;
+    unsigned int desired_scale = std::min(dims.width() / dims.dst_width,
+                                          dims.height() / dims.dst_height);
+
+    if (desired_scale > 1) {
+        set_scale(desired_scale);
+    }
+
+    unsigned int scale = get_scale();
+    dims.left_x = dims.left_x / scale;
+    dims.top_y = dims.top_y / scale;
+    dims.right_x = dims.right_x / scale;
+    dims.bottom_y = dims.bottom_y / scale;
 
     return decode_impl(dims);
 }

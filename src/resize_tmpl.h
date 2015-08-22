@@ -70,17 +70,17 @@ Image resize(const Image &img, unsigned int w, unsigned int h,
         return Image();
     }
     switch (img.type()) {
-        case ImageType::XRGB:
-            return Image(resize_rgbx<_RESIZE_XRGB>(*img.val<ImageType::XRGB>(),
+        case ColorSpace::XRGB:
+            return Image(resize_rgbx<_RESIZE_XRGB>(*img.val<ColorSpace::XRGB>(),
                                                    w, h, mthd));
-        case ImageType::YUV420:
+        case ColorSpace::YUV420:
             return Image(resize_planar<_RESIZE_GRAY>(
-                    *img.val<ImageType::YUV420>(), w, h, mthd));
-        case ImageType::YUV444:
+                    *img.val<ColorSpace::YUV420>(), w, h, mthd));
+        case ColorSpace::YUV444:
             return Image(resize_planar<_RESIZE_GRAY>(
-                    *img.val<ImageType::YUV444>(), w, h, mthd));
-        case ImageType::GRAYSCALE:
+                    *img.val<ColorSpace::YUV444>(), w, h, mthd));
+        case ColorSpace::GRAYSCALE:
             return Image(resize_planar<_RESIZE_GRAY>(
-                    *img.val<ImageType::GRAYSCALE>(), w, h, mthd));
+                    *img.val<ColorSpace::GRAYSCALE>(), w, h, mthd));
     }
 }

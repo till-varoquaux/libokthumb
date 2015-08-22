@@ -2,15 +2,7 @@
 #pragma once
 #include "image.h"
 #include "bounded_int.h"
-
-namespace config {
-struct resize {
-#define ENTRY(_section, _name, _type, _default, _docstring)                    \
-  _type _name = _type(_default);
-#include "resize_config-x.def"
-#undef ENTRY
-}; // sruct resize
-} // namespace config
+#include "config.h"
 
 enum class scale_method {
   FASTEST, // Point or fast bilinear

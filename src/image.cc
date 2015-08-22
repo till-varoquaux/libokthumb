@@ -11,15 +11,15 @@ extern "C" {
 static_assert(sizeof(ARGBPixel) == sizeof(int32_t), "pixel packing error");
 
 
-const char *to_string(ImageType ty) {
+const char *to_string(ColorSpace ty) {
   switch (ty) {
-  case ImageType::YUV420:
+  case ColorSpace::YUV420:
     return "yuv420";
-  case ImageType::YUV444:
+  case ColorSpace::YUV444:
     return "yuv444";
-  case ImageType::XRGB:
+  case ColorSpace::XRGB:
     return "rgbx";
-  case ImageType::GRAYSCALE:
+  case ColorSpace::GRAYSCALE:
     return "grayscale";
   }
 }

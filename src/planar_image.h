@@ -3,7 +3,7 @@
 #include "aligned_storage.h"
 #include "indice_tuple.h"
 
-enum class ImageType : unsigned char;
+enum class ColorSpace : unsigned char;
 
 //==============================================================================
 
@@ -57,7 +57,7 @@ public:
 
 //------------------------------------------------------------------------------
 
-template <ImageType IMAGE_TYPE_, typename PIXEL_TYPE_ = uint8_t,
+template <ColorSpace IMAGE_TYPE_, typename PIXEL_TYPE_ = uint8_t,
           typename... DIMS_>
 class PlanarImage : public PlanarImageBase {
   static_assert(sizeof...(DIMS_) > 0, "Cannot declare empty image");
@@ -95,7 +95,7 @@ public:
 
   static constexpr size_t num_planes = sizeof...(DIMS_);
 
-  static constexpr ImageType type = IMAGE_TYPE_;
+  static constexpr ColorSpace type = IMAGE_TYPE_;
 
   static constexpr unsigned int max_h_samp = tuple_helper::max(DIMS_::h...);
   static constexpr unsigned int max_v_samp = tuple_helper::max(DIMS_::v...);

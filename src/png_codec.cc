@@ -177,8 +177,8 @@ void png_reader::JunkLines(const dim_t dims) noexcept {
 }
 
 void png_reader::ReadLines(const dim_t dims) noexcept {
-  if (scaled_width() == dims.dst_width) {
-    for (unsigned int i = 0; i < dims.dst_height; i++) {
+  if (scaled_width() == dims.width()) {
+    for (unsigned int i = 0; i < dims.height(); i++) {
       png_read_row(png_, reinterpret_cast<unsigned char *>(tmp_img_.row<0>(i)),
                    nullptr);
     }
@@ -186,10 +186,10 @@ void png_reader::ReadLines(const dim_t dims) noexcept {
   } else {
     ARGBPixel *scratch = src_line_buf(dims);
 
-    for (unsigned int i = 0; i < dims.dst_height; i++) {
+    for (unsigned int i = 0; i < dims.height(); i++) {
       png_read_row(png_, reinterpret_cast<unsigned char *>(scratch), nullptr);
       memcpy(tmp_img_.row<0>(i), scratch + dims.left_x,
-             dims.dst_width * sizeof(ARGBPixel));
+             dims.width() * sizeof(ARGBPixel));
     }
   }
 }
@@ -201,7 +201,7 @@ Image png_reader::decode_impl(const dim_t dims) {
     return Image();
   }
 
-  tmp_img_ = XRGBImage(dims.dst_width, dims.dst_height);
+  tmp_img_ = XRGBImage(dims.width(), dims.height());
 
   JunkLines(dims);
   ReadLines(dims);

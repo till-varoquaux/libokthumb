@@ -99,39 +99,39 @@ _DST convert(const _F *f, const _SRC &src) {
 
 const ConvRes<Yuv420Image> to_yuv420(const Image &img) {
   switch (img.type()) {
-  case ImageType::XRGB:
+  case ColorSpace::XRGB:
     return ConvRes<Yuv420Image>(inplace,
                                 convert<Yuv420Image>(libyuv::ARGBToI420,
-                                                     *img.val<ImageType::XRGB>()));
-  case ImageType::YUV420:
-    return ConvRes<Yuv420Image>(img.val<ImageType::YUV420>());
-  case ImageType::GRAYSCALE:
+                                                     *img.val<ColorSpace::XRGB>()));
+  case ColorSpace::YUV420:
+    return ConvRes<Yuv420Image>(img.val<ColorSpace::YUV420>());
+  case ColorSpace::GRAYSCALE:
     return ConvRes<Yuv420Image>(
         inplace, convert<Yuv420Image>(libyuv::I400ToI420,
-                                      *img.val<ImageType::GRAYSCALE>()));
-  case ImageType::YUV444:
+                                      *img.val<ColorSpace::GRAYSCALE>()));
+  case ColorSpace::YUV444:
       return ConvRes<Yuv420Image>(
         inplace, convert<Yuv420Image>(libyuv::I444ToI420,
-                                      *img.val<ImageType::YUV444>()));
+                                      *img.val<ColorSpace::YUV444>()));
   }
 }
 
 const ConvRes<XRGBImage> to_xrgb(const Image &img) {
   switch (img.type()) {
-  case ImageType::XRGB:
-    return ConvRes<XRGBImage>(img.val<ImageType::XRGB>());
-  case ImageType::YUV420:
+  case ColorSpace::XRGB:
+    return ConvRes<XRGBImage>(img.val<ColorSpace::XRGB>());
+  case ColorSpace::YUV420:
     return ConvRes<XRGBImage>(
         inplace,
-        convert<XRGBImage>(libyuv::I420ToARGB, *img.val<ImageType::YUV420>()));
-  case ImageType::GRAYSCALE:
+        convert<XRGBImage>(libyuv::I420ToARGB, *img.val<ColorSpace::YUV420>()));
+  case ColorSpace::GRAYSCALE:
     return ConvRes<XRGBImage>(
         inplace, convert<XRGBImage>(libyuv::I400ToARGB,
-                                    *img.val<ImageType::GRAYSCALE>()));
-  case ImageType::YUV444:
+                                    *img.val<ColorSpace::GRAYSCALE>()));
+  case ColorSpace::YUV444:
     return ConvRes<XRGBImage>(
         inplace, convert<XRGBImage>(libyuv::I444ToARGB,
-                                    *img.val<ImageType::YUV444>()));
+                                    *img.val<ColorSpace::YUV444>()));
   }
 }
 
