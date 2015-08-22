@@ -1,6 +1,5 @@
-{
-  'variables': { 'src': '<(DEPTH)/externals/giflib/lib' },
-  'targets': [
+{  'variables': { 'src': '<(DEPTH)/externals/giflib/lib' },
+   'targets': [
     {
       'target_name': 'giflib',
       'type': 'static_library',
@@ -22,5 +21,5 @@
         '<(src)/quantize.c'
       ]
     }
-  ]
-}
+   ]
+ }

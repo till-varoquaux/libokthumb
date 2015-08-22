@@ -1,5 +1,1 @@
-{
-  'includes': [
-    '../externals/libyuv/libyuv.gyp'
-  ]
-}
+{'includes': ['../externals/libyuv/libyuv.gyp']}
