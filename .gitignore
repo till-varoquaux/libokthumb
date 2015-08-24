@@ -1,2 +1,6 @@
 out/**
 *.target.mk
+*.Makefile
+*.gyp.py
+*.gyppy
+/Makefile
