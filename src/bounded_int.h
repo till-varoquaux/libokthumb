@@ -4,17 +4,17 @@
 #include <cassert>
 #include <iostream>
 
-
 template <unsigned int _Max_v, class _Underlying = unsigned char>
 class bounded_int {
     static_assert(sizeof(_Underlying) < sizeof(unsigned int),
                   "Underlying type too big");
     static_assert(_Max_v <= ((1L << (8 * sizeof(_Underlying))) - 1),
                   "Max value too big for underlying type.");
-private:
+
+   private:
     _Underlying value;
 
-public:
+   public:
     explicit bounded_int(_Underlying v = 0) : value(v) { assert(v <= _Max_v); }
     operator _Underlying() const { return value; }
 

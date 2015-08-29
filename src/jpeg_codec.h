@@ -14,43 +14,44 @@ extern "C" {
 bool is_jpeg(const std::string &src);
 
 class jpeg_reader final : public image_reader, public jpeg_error_mgr {
-private:
-  jmp_buf jmp_buffer_;
-  struct jpeg_decompress_struct dinfo_;
-  static void fatal_error(j_common_ptr cinfo) __attribute__((noreturn));
-  static void non_fatal_error(j_common_ptr cinfo);
+   private:
+    jmp_buf jmp_buffer_;
+    struct jpeg_decompress_struct dinfo_;
+    static void fatal_error(j_common_ptr cinfo) __attribute__((noreturn));
+    static void non_fatal_error(j_common_ptr cinfo);
 
-  Image decode_impl(dim_t dims) override;
+    Image decode_impl(dim_t dims) override;
 
-  Image fancy_decode(dim_t dims);
+    Image fancy_decode(dim_t dims);
 
-  template <typename _IMG> Image planar_decode(const dim_t img_dims);
+    template <typename _IMG>
+    Image planar_decode(const dim_t img_dims);
 
-public:
-  explicit jpeg_reader(const std::string &src,
-                       const config::jpeg &config = config::jpeg());
+   public:
+    explicit jpeg_reader(const std::string &src,
+                         const config::jpeg &config = config::jpeg());
 
-  img_type file_type() const override { return JPEG; }
+    img_type file_type() const override { return JPEG; }
 
-  unsigned int src_width() const override {
-    return ok() ? dinfo_.image_width : 0;
-  }
-  unsigned int src_height() const override {
-    return ok() ? dinfo_.image_height : 0;
-  }
+    unsigned int src_width() const override {
+        return ok() ? dinfo_.image_width : 0;
+    }
+    unsigned int src_height() const override {
+        return ok() ? dinfo_.image_height : 0;
+    }
 
-  unsigned int scaled_width() const override {
-    return ok() ? dinfo_.output_width : 0;
-  }
+    unsigned int scaled_width() const override {
+        return ok() ? dinfo_.output_width : 0;
+    }
 
-  unsigned int scaled_height() const override {
-    return ok() ? dinfo_.output_height : 0;
-  }
+    unsigned int scaled_height() const override {
+        return ok() ? dinfo_.output_height : 0;
+    }
 
-  void set_scale(unsigned int) override;
-  unsigned int get_scale() const override;
+    void set_scale(unsigned int) override;
+    unsigned int get_scale() const override;
 
-  ~jpeg_reader();
+    ~jpeg_reader();
 };
 
 std::string encode_jpeg(const Image &img,

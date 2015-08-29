@@ -32,7 +32,6 @@
 // To grayscale:
 //   Y = (6969 * R + 23434 * G + 2365 * B)/32768
 
-
 // All of libyuv conversion functions are called the same way:
 // f(src.data<0>, src.stride<0>,..., src.data<n>, src.stride<n>,
 //   dst.data<0>, dst.stride<0>,..., dst.data<n>, dst.stride<n>,
@@ -42,36 +41,42 @@
 template <size_t N>
 struct GetDataOp {
     template <typename _T>
-    static uint8_t *get(_T &v) { return v.template data<N>(); }
+    static uint8_t *get(_T &v) {
+        return v.template data<N>();
+    }
 
     template <typename _T>
-    static const uint8_t *get(const _T &v) { return v.template data<N>(); }
+    static const uint8_t *get(const _T &v) {
+        return v.template data<N>();
+    }
 };
 
 template <size_t N>
 struct GetStrideOp {
     template <typename _T>
     static int get(const _T &v) {
-      return static_cast<int>(v.template stride<N>());
+        return static_cast<int>(v.template stride<N>());
     }
 };
 
 //------------------------------------------------------------------------------
 
-template <typename... _T> struct op_list {};
+template <typename... _T>
+struct op_list {};
 
-template <size_t _Ep, class _OpList> struct __make_oplist_imp;
+template <size_t _Ep, class _OpList>
+struct __make_oplist_imp;
 
 template <size_t _Ep, typename... _Ops>
 struct __make_oplist_imp<_Ep, op_list<_Ops...>> {
-  typedef typename __make_oplist_imp<
-      _Ep - 1, op_list<GetDataOp<_Ep - 1>, GetStrideOp<_Ep - 1>, _Ops...>>::type
-      type;
+    typedef typename __make_oplist_imp<
+            _Ep - 1, op_list<GetDataOp<_Ep - 1>, GetStrideOp<_Ep - 1>,
+                             _Ops...>>::type type;
 };
 
-template <typename ... _Ops>
+template <typename... _Ops>
 struct __make_oplist_imp<0, op_list<_Ops...>> {
-  typedef op_list<_Ops...> type;
+    typedef op_list<_Ops...> type;
 };
 
 //------------------------------------------------------------------------------
@@ -85,79 +90,81 @@ _DST convert_impl(const _F *f, const _SRC &src, const op_list<_SRC_OPS...>,
                   const op_list<_DST_OPS...>) {
     _DST res(src.width(), src.height());
     f(_SRC_OPS::get(src)..., _DST_OPS::get(res)...,
-      static_cast<int>(src.width()),
-      static_cast<int>(src.height()));
+      static_cast<int>(src.width()), static_cast<int>(src.height()));
     return res;
 }
 
 template <typename _DST, typename _F, typename _SRC>
 _DST convert(const _F *f, const _SRC &src) {
-  return convert_impl<_SRC, _DST>(f, src, make_oplist<_SRC>(),
-                                  make_oplist<_DST>());
+    return convert_impl<_SRC, _DST>(f, src, make_oplist<_SRC>(),
+                                    make_oplist<_DST>());
 }
 
-
 const ConvRes<Yuv420Image> to_yuv420(const Image &img) {
-  switch (img.type()) {
-  case ColorSpace::XRGB:
-    return ConvRes<Yuv420Image>(inplace,
-                                convert<Yuv420Image>(libyuv::ARGBToI420,
-                                                     *img.val<ColorSpace::XRGB>()));
-  case ColorSpace::YUV420:
-    return ConvRes<Yuv420Image>(img.val<ColorSpace::YUV420>());
-  case ColorSpace::GRAYSCALE:
-    return ConvRes<Yuv420Image>(
-        inplace, convert<Yuv420Image>(libyuv::I400ToI420,
-                                      *img.val<ColorSpace::GRAYSCALE>()));
-  case ColorSpace::YUV444:
-      return ConvRes<Yuv420Image>(
-        inplace, convert<Yuv420Image>(libyuv::I444ToI420,
-                                      *img.val<ColorSpace::YUV444>()));
-  }
+    switch (img.type()) {
+        case ColorSpace::XRGB:
+            return ConvRes<Yuv420Image>(
+                    inplace,
+                    convert<Yuv420Image>(libyuv::ARGBToI420,
+                                         *img.val<ColorSpace::XRGB>()));
+        case ColorSpace::YUV420:
+            return ConvRes<Yuv420Image>(img.val<ColorSpace::YUV420>());
+        case ColorSpace::GRAYSCALE:
+            return ConvRes<Yuv420Image>(
+                    inplace,
+                    convert<Yuv420Image>(libyuv::I400ToI420,
+                                         *img.val<ColorSpace::GRAYSCALE>()));
+        case ColorSpace::YUV444:
+            return ConvRes<Yuv420Image>(
+                    inplace,
+                    convert<Yuv420Image>(libyuv::I444ToI420,
+                                         *img.val<ColorSpace::YUV444>()));
+    }
 }
 
 const ConvRes<XRGBImage> to_xrgb(const Image &img) {
-  switch (img.type()) {
-  case ColorSpace::XRGB:
-    return ConvRes<XRGBImage>(img.val<ColorSpace::XRGB>());
-  case ColorSpace::YUV420:
-    return ConvRes<XRGBImage>(
-        inplace,
-        convert<XRGBImage>(libyuv::I420ToARGB, *img.val<ColorSpace::YUV420>()));
-  case ColorSpace::GRAYSCALE:
-    return ConvRes<XRGBImage>(
-        inplace, convert<XRGBImage>(libyuv::I400ToARGB,
-                                    *img.val<ColorSpace::GRAYSCALE>()));
-  case ColorSpace::YUV444:
-    return ConvRes<XRGBImage>(
-        inplace, convert<XRGBImage>(libyuv::I444ToARGB,
-                                    *img.val<ColorSpace::YUV444>()));
-  }
+    switch (img.type()) {
+        case ColorSpace::XRGB:
+            return ConvRes<XRGBImage>(img.val<ColorSpace::XRGB>());
+        case ColorSpace::YUV420:
+            return ConvRes<XRGBImage>(
+                    inplace,
+                    convert<XRGBImage>(libyuv::I420ToARGB,
+                                       *img.val<ColorSpace::YUV420>()));
+        case ColorSpace::GRAYSCALE:
+            return ConvRes<XRGBImage>(
+                    inplace,
+                    convert<XRGBImage>(libyuv::I400ToARGB,
+                                       *img.val<ColorSpace::GRAYSCALE>()));
+        case ColorSpace::YUV444:
+            return ConvRes<XRGBImage>(
+                    inplace,
+                    convert<XRGBImage>(libyuv::I444ToARGB,
+                                       *img.val<ColorSpace::YUV444>()));
+    }
 }
 
-
-static GrayscaleImage
-    to_grayscale(const Yuv420Image &yuv) {
-  GrayscaleImage res(yuv.width(), yuv.height());
-  assert(yuv.size<0>() == res.size<0>());
-  memcpy(res.data<0>(), yuv.data<0>(), res.size<0>());
-  return res;
+static GrayscaleImage to_grayscale(const Yuv420Image &yuv) {
+    GrayscaleImage res(yuv.width(), yuv.height());
+    assert(yuv.size<0>() == res.size<0>());
+    memcpy(res.data<0>(), yuv.data<0>(), res.size<0>());
+    return res;
 }
 
 static GrayscaleImage to_grayscale(const Yuv444Image &yuv) {
-  GrayscaleImage res(yuv.width(), yuv.height());
-  assert(yuv.size<0>() == res.size<0>());
-  memcpy(res.data<0>(), yuv.data<0>(), res.size<0>());
-  return res;
+    GrayscaleImage res(yuv.width(), yuv.height());
+    assert(yuv.size<0>() == res.size<0>());
+    memcpy(res.data<0>(), yuv.data<0>(), res.size<0>());
+    return res;
 }
 
 static GrayscaleImage to_grayscale(const XRGBImage &xrgb) {
-  GrayscaleImage res(xrgb.width(), xrgb.height());
-  libyuv::ARGBToI400(xrgb.data<0>(), static_cast<int>(xrgb.stride<0>()),
-                     res.data<0>(), static_cast<int>(res.stride<0>()),
-                     static_cast<int>(xrgb.width()),
-                     static_cast<int>(xrgb.height()));
-  return res;
+    GrayscaleImage res(xrgb.width(), xrgb.height());
+    libyuv::ARGBToI400(xrgb.data<0>(), static_cast<int>(xrgb.stride<0>()),
+                       res.data<0>(), static_cast<int>(res.stride<0>()),
+                       static_cast<int>(xrgb.width()),
+                       static_cast<int>(xrgb.height()));
+    return res;
 }
 
 const inplace_t inplace{};

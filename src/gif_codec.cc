@@ -33,7 +33,7 @@ static const char *str_gif_error(int ErrorCode) {
 static int read_stringbuf(GifFileType *t, GifByteType *mem, int len) {
     std::stringbuf *sbuf = reinterpret_cast<std::stringbuf *>(t->UserData);
     const std::streamsize bytesRead =
-        sbuf->sgetn(reinterpret_cast<char *>(mem), len);
+            sbuf->sgetn(reinterpret_cast<char *>(mem), len);
 
     return static_cast<int>(bytesRead);
 }
@@ -43,7 +43,7 @@ bool is_gif(const std::string &src) {
         return false;
     }
     return src[0] == 'G' && src[1] == 'I' && src[2] == 'F' && src[3] == '8' &&
-        (src[4] == '9' || src[4] == '7') && src[5] == 'a';
+           (src[4] == '9' || src[4] == '7') && src[5] == 'a';
 }
 
 gif_reader::~gif_reader() {
@@ -54,79 +54,80 @@ gif_reader::~gif_reader() {
 }
 
 gif_reader::gif_reader(const std::string &data) : sbuf(data) {
-  int Error;
+    int Error;
 
-  gif = DGifOpen(&sbuf, &read_stringbuf, &Error);
+    gif = DGifOpen(&sbuf, &read_stringbuf, &Error);
 
-  if (gif == nullptr) {
-    set_error(str_gif_error(Error));
-    return;
-  }
+    if (gif == nullptr) {
+        set_error(str_gif_error(Error));
+        return;
+    }
 
-  if (DGifSlurp(gif) == GIF_ERROR) {
-    set_error(str_gif_error(gif->Error));
-    return;
-  }
+    if (DGifSlurp(gif) == GIF_ERROR) {
+        set_error(str_gif_error(gif->Error));
+        return;
+    }
 
-  if (gif->SavedImages == nullptr) {
-    set_error("No image found in gif");
-    return;
-  }
+    if (gif->SavedImages == nullptr) {
+        set_error("No image found in gif");
+        return;
+    }
 }
 
 unsigned int gif_reader::src_width() const {
-  if (!ok()) {
-    return 0;
-  }
-  const SavedImage &gif_img = gif->SavedImages[0];
-  return static_cast<unsigned int>(gif_img.ImageDesc.Width);
+    if (!ok()) {
+        return 0;
+    }
+    const SavedImage &gif_img = gif->SavedImages[0];
+    return static_cast<unsigned int>(gif_img.ImageDesc.Width);
 }
 
 unsigned int gif_reader::src_height() const {
-  if (!ok()) {
-    return 0;
-  }
-  const SavedImage &gif_img = gif->SavedImages[0];
-  return static_cast<unsigned int>(gif_img.ImageDesc.Height);
+    if (!ok()) {
+        return 0;
+    }
+    const SavedImage &gif_img = gif->SavedImages[0];
+    return static_cast<unsigned int>(gif_img.ImageDesc.Height);
 }
 
 Image gif_reader::decode_impl(dim_t dims) {
-  const SavedImage &gif_img = gif->SavedImages[0];
+    const SavedImage &gif_img = gif->SavedImages[0];
 
-  /* Lets dump it - set the global variables required and do it: */
-  const ColorMapObject *ColorMap =
-      (gif_img.ImageDesc.ColorMap ? gif_img.ImageDesc.ColorMap
-                                  : gif->SColorMap);
-  if (ColorMap == nullptr) {
-    set_error("Gif Image does not have a colormap");
-    return Image();
-  }
-
-  XRGBImage res(dims.width(), dims.height());
-
-  // This would probably be faster if we grabbed whole lines at once.
-  for (unsigned int i = 0; i < dims.height(); i++) {
-    ARGBPixel *row = res.row<0>(i);
-    const GifByteType *src =
-        &gif_img.RasterBits[(dims.top_y + i) * scaled_width() + dims.left_x];
-    for (unsigned int j = 0; j < dims.width(); j++) {
-      auto ColorMapEntry = &ColorMap->Colors[src[j]];
-      // We are not bothering to check whether this is the transparent
-      // color.
-      row[j].a = 255;
-      row[j].r = ColorMapEntry->Red;
-      row[j].g = ColorMapEntry->Green;
-      row[j].b = ColorMapEntry->Blue;
+    /* Lets dump it - set the global variables required and do it: */
+    const ColorMapObject *ColorMap =
+            (gif_img.ImageDesc.ColorMap ? gif_img.ImageDesc.ColorMap
+                                        : gif->SColorMap);
+    if (ColorMap == nullptr) {
+        set_error("Gif Image does not have a colormap");
+        return Image();
     }
-  }
 
-  int err_code;
-  const int gif_res  = DGifCloseFile(gif, &err_code);
-  gif = nullptr;
-  if (gif_res != GIF_OK) {
-    set_error(str_gif_error(err_code));
-    return Image();
-  }
+    XRGBImage res(dims.width(), dims.height());
 
-  return Image(std::move(res));
+    // This would probably be faster if we grabbed whole lines at once.
+    for (unsigned int i = 0; i < dims.height(); i++) {
+        ARGBPixel *row = res.row<0>(i);
+        const GifByteType *src =
+                &gif_img.RasterBits[(dims.top_y + i) * scaled_width() +
+                                    dims.left_x];
+        for (unsigned int j = 0; j < dims.width(); j++) {
+            auto ColorMapEntry = &ColorMap->Colors[src[j]];
+            // We are not bothering to check whether this is the transparent
+            // color.
+            row[j].a = 255;
+            row[j].r = ColorMapEntry->Red;
+            row[j].g = ColorMapEntry->Green;
+            row[j].b = ColorMapEntry->Blue;
+        }
+    }
+
+    int err_code;
+    const int gif_res = DGifCloseFile(gif, &err_code);
+    gif = nullptr;
+    if (gif_res != GIF_OK) {
+        set_error(str_gif_error(err_code));
+        return Image();
+    }
+
+    return Image(std::move(res));
 }

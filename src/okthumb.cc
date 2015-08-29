@@ -5,16 +5,15 @@
 #include "resize.h"
 #include <string>
 
-ImgPipeline::ImgPipeline(const std::string &in, const Config &config)
-    : reader_(img::get_reader(in, config.jpeg)), config_(&config){
-};
+ImgPipeline::ImgPipeline(const std::string& in, const Config& config)
+        : reader_(img::get_reader(in, config.jpeg)), config_(&config){};
 
 const std::string& ImgPipeline::error() const {
     if (reader_) {
         return reader_->error();
     }
     static const std::string& failed_hdr =
-        *new std::string("Failed to recognise the image type");
+            *new std::string("Failed to recognise the image type");
     return failed_hdr;
 };
 
@@ -27,11 +26,11 @@ const std::string& ImgPipeline::warning() const {
 };
 
 unsigned int ImgPipeline::src_height() const {
-    return (reader_)? reader_->src_height() : 0;
+    return (reader_) ? reader_->src_height() : 0;
 }
 
 unsigned int ImgPipeline::src_width() const {
-    return (reader_)? reader_->src_width() : 0;
+    return (reader_) ? reader_->src_width() : 0;
 }
 
 void ImgPipeline::crop(unsigned int left_x, unsigned int top_y,
@@ -44,14 +43,12 @@ void ImgPipeline::crop(unsigned int left_x, unsigned int top_y,
     }
 }
 
-
 void ImgPipeline::resize(unsigned int width, unsigned int height) {
     if (reader_) {
         reader_->dims.dst_width = width;
         reader_->dims.dst_height = height;
     }
 }
-
 
 // std::unique_ptr<image_reader> reader(img::get_reader(src, config.jpeg));
 std::string ImgPipeline::run(file_type f) {

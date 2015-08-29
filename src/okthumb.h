@@ -8,9 +8,9 @@ struct Config;
 // abi compatibility
 
 enum class file_type {
-    PPM,            // For testing purposes... Seriously slow and non-fancy
+    PPM,  // For testing purposes... Seriously slow and non-fancy
     JPEG,
-    WEBP            // for Chromium
+    WEBP  // for Chromium
     //    BPG       // http://bellard.org/bpg/
     //    JPEG2000  // for safari
 };
@@ -21,17 +21,16 @@ struct ImgPipeline {
     const std::string &error() const;
     const std::string &warning() const;
 
-    ImgPipeline(const std::string&, const Config&);
+    ImgPipeline(const std::string &, const Config &);
     // TODO: take a const char* and a length
 
     unsigned int src_height() const;
     unsigned int src_width() const;
 
     // The crop happens before the resize
-    void crop(unsigned int left_x = 0,
-              unsigned int top_y = 0,
-              unsigned int right_x = 0,  // 0 means right edge
-              unsigned int bottom_y = 0); // 0 means bottom edge
+    void crop(unsigned int left_x = 0, unsigned int top_y = 0,
+              unsigned int right_x = 0,    // 0 means right edge
+              unsigned int bottom_y = 0);  // 0 means bottom edge
 
     void resize(unsigned int width, unsigned int height);
 
@@ -39,8 +38,7 @@ struct ImgPipeline {
     // `const char* data()` and write to it
     std::string run(file_type);
 
-protected:
+   protected:
     std::unique_ptr<image_reader> reader_;
-    const Config* config_;
+    const Config *config_;
 };
-
