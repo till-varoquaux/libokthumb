@@ -1,11 +1,11 @@
 // -*- C++ -*-
 #pragma once
-#include "image.h"
-#include "image_reader.h"
-#include "aligned_storage.h"
 #include <string>
 #include <sstream>
 #include <cstdint>
+#include "src/image.h"
+#include "src/image_reader.h"
+#include "src/aligned_storage.h"
 
 bool is_png(const std::string &src);
 

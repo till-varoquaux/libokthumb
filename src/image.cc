@@ -1,12 +1,12 @@
-#include "image.h"
-#include <cassert>
-#include <algorithm>
-#include "aligned_storage.h"
-#include <include/libyuv.h>
-
+#include "src/image.h"
 extern "C" {
 #include <endian.h>
 }
+#include <cassert>
+#include <algorithm>
+#include "include/libyuv.h"
+#include "src/aligned_storage.h"
+
 
 static_assert(sizeof(ARGBPixel) == sizeof(int32_t), "pixel packing error");
 

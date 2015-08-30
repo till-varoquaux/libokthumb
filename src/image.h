@@ -1,9 +1,9 @@
 // -*- C++ -*-
 #pragma once
 #include <cassert>
-#include "aligned_storage.h"
-#include "planar_image.h"
-#include "okthumb.h"
+#include "src/aligned_storage.h"
+#include "src/planar_image.h"
+#include "src/okthumb.h"
 
 /**
  *   <---------------------stride------------------------>
@@ -108,7 +108,7 @@ class Image : public PlanarImageBase {
     ~Image() = default;
 
     template <ColorSpace IMAGETYPE_, typename PIXEL_, typename... DIMS_>
-    Image(PlanarImage<IMAGETYPE_, PIXEL_, DIMS_...> &&rhs)
+    explicit Image(PlanarImage<IMAGETYPE_, PIXEL_, DIMS_...> &&rhs)
             : PlanarImageBase(std::move(rhs)), type_(IMAGETYPE_) {
         static_assert(std::is_same<PlanarImage<IMAGETYPE_, PIXEL_, DIMS_...>,
                                    BaseImage<IMAGETYPE_>>::value,

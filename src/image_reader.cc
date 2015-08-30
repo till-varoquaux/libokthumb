@@ -1,12 +1,12 @@
-#include "image_reader.h"
+#include "src/image_reader.h"
 #include <cassert>
 #include <algorithm>
-#include "aligned_storage.h"
-#include "jpeg_codec.h"
-#include "gif_codec.h"
-#include "png_codec.h"
-#include "logging.h"
-#include "config.h"
+#include "src/aligned_storage.h"
+#include "src/jpeg_codec.h"
+#include "src/gif_codec.h"
+#include "src/png_codec.h"
+#include "src/logging.h"
+#include "src/config.h"
 
 void image_reader::set_scale(unsigned int) {}
 

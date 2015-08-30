@@ -1,7 +1,7 @@
 // -*- C++ -*-
 #pragma once
-#include "image.h"
 #include <string>
+#include "src/image.h"
 
 // This codec is intended to be used for debug purposes only. It is slow and
 // incomplete but damn simple.

@@ -1,12 +1,12 @@
 // -*- C++ -*-
 #pragma once
-#include "image.h"
 #include <memory>
 #include <string>
+#include "src/image.h"
 
 namespace config {
 struct jpeg;
-}  // config
+}  // namespace config
 
 class image_reader {
     std::string error_, warning_;
@@ -72,4 +72,4 @@ std::unique_ptr<image_reader> get_reader(const std::string &data,
                                          const config::jpeg &jconfig);
 
 std::unique_ptr<image_reader> get_reader(const std::string &data);
-}
+}  // namespace img

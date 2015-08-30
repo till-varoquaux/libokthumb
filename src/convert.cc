@@ -1,5 +1,5 @@
-#include "convert.h"
-#include <include/libyuv.h>
+#include "src/convert.h"
+#include "include/libyuv.h"
 
 // // This is a slow and jenky conversion
 // // http://en.wikipedia.org/wiki/YCbCr
@@ -41,21 +41,21 @@
 template <size_t N>
 struct GetDataOp {
     template <typename _T>
-    static uint8_t *get(_T &v) {
-        return v.template data<N>();
+    static uint8_t *get(_T *v) {
+        return v->template data<N>();
     }
 
     template <typename _T>
-    static const uint8_t *get(const _T &v) {
-        return v.template data<N>();
+    static const uint8_t *get(const _T *v) {
+        return v->template data<N>();
     }
 };
 
 template <size_t N>
 struct GetStrideOp {
     template <typename _T>
-    static int get(const _T &v) {
-        return static_cast<int>(v.template stride<N>());
+    static int get(const _T *v) {
+        return static_cast<int>(v->template stride<N>());
     }
 };
 
@@ -89,7 +89,7 @@ template <typename _SRC, typename _DST, typename _F, typename... _SRC_OPS,
 _DST convert_impl(const _F *f, const _SRC &src, const op_list<_SRC_OPS...>,
                   const op_list<_DST_OPS...>) {
     _DST res(src.width(), src.height());
-    f(_SRC_OPS::get(src)..., _DST_OPS::get(res)...,
+    f(_SRC_OPS::get(&src)..., _DST_OPS::get(&res)...,
       static_cast<int>(src.width()), static_cast<int>(src.height()));
     return res;
 }

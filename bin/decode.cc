@@ -1,11 +1,11 @@
-#include "logging.h"
-#include "resize.h"
-#include "ppm_codec.h"
-#include "image_reader.h"
 #include <fstream>
 #include <cstdlib>
 #include <iostream>
-#include "image.h"
+#include "src/logging.h"
+#include "src/resize.h"
+#include "src/ppm_codec.h"
+#include "src/image_reader.h"
+#include "src/image.h"
 
 
 // For testing purposes: read a whole file into a std::str

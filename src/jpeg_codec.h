@@ -1,15 +1,15 @@
 // -*- C++ -*-
 #pragma once
-#include "image.h"
-#include "image_reader.h"
 #include <string>
 #include <csetjmp>
-#include "bounded_int.h"
-#include "convert.h"
-#include "config.h"
 extern "C" {
-#include <externals/libjpeg-turbo/jpeglib.h>
+#include "externals/libjpeg-turbo/jpeglib.h"
 }
+#include "src/image.h"
+#include "src/image_reader.h"
+#include "src/bounded_int.h"
+#include "src/convert.h"
+#include "src/config.h"
 
 bool is_jpeg(const std::string &src);
 

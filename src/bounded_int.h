@@ -44,4 +44,4 @@ istream &operator>>(istream &strm, bounded_int<_Max_v, _Underlying> &b) {
     }
     return strm;
 }
-}
+}  // namespace std

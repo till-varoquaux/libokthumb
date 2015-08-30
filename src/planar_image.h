@@ -1,7 +1,8 @@
 // -*- C++ -*-
 #pragma once
-#include "aligned_storage.h"
-#include "indice_tuple.h"
+#include <algorithm>
+#include "src/aligned_storage.h"
+#include "src/indice_tuple.h"
 
 enum class ColorSpace : unsigned char;
 

@@ -1,8 +1,9 @@
 // -*- C++ -*-
 #pragma once
-#include "image.h"
-#include "image_reader.h"
 #include <sstream>
+#include <string>
+#include "src/image.h"
+#include "src/image_reader.h"
 
 bool is_gif(const std::string &src);
 

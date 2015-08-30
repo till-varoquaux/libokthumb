@@ -1,8 +1,7 @@
 #include <iostream>
 #include <cstring>
-// For terminate
-#include <exception>
-#include "logging.h"
+#include <exception>  // For terminate
+#include "src/logging.h"
 
 static const char *shorten_src_path(const char *path) {
     const char *res = strrchr(path, '/');

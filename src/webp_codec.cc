@@ -1,10 +1,10 @@
-#include "webp_codec.h"
+#include "src/webp_codec.h"
 #include <string>
 #include <cstring>
 #include <memory>
-#include "logging.h"
-#include "convert.h"
-#include <externals/libwebp/src/webp/encode.h>
+#include "externals/libwebp/src/webp/encode.h"
+#include "src/logging.h"
+#include "src/convert.h"
 
 namespace {
 int write_to_string(const uint8_t *data, size_t data_size,

@@ -1,7 +1,7 @@
 // -*- C++ -*-
 #pragma once
 
-#include "image.h"
+#include "src/image.h"
 
 // TODO: better naming etc for this class
 struct inplace_t {};

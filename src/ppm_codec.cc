@@ -1,11 +1,10 @@
-#include "ppm_codec.h"
-#include <string>
-#include <sstream>
-#include "convert.h"
-
+#include "src/ppm_codec.h"
 extern "C" {
 #include <arpa/inet.h>
 }
+#include <string>
+#include <sstream>
+#include "src/convert.h"
 
 // http://paulbourke.net/dataformats/ppm/
 std::string encode_ppm(const XRGBImage &img) {

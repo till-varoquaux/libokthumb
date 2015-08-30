@@ -1,5 +1,4 @@
-#include "image.h"
-#include "gif_codec.h"
+#include "src/gif_codec.h"
 #include <sstream>
 #include <iostream>
 
@@ -17,8 +16,9 @@
  * and raster them until we hit we hit an extension with a delay.
  */
 extern "C" {
-#include <externals/giflib/lib/gif_lib.h>
+#include "externals/giflib/lib/gif_lib.h"
 }
+#include "src/image.h"
 
 static const char *str_gif_error(int ErrorCode) {
     const char *err = GifErrorString(ErrorCode);

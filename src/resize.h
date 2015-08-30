@@ -1,8 +1,8 @@
 // -*- C++ -*-
 #pragma once
-#include "image.h"
-#include "bounded_int.h"
-#include "config.h"
+#include "src/image.h"
+#include "src/bounded_int.h"
+#include "src/config.h"
 
 enum class scale_method {
     FASTEST,  // Point or fast bilinear

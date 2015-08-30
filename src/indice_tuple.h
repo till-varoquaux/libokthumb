@@ -1,5 +1,6 @@
 // -*- C++ -*-
 #pragma once
+#include <algorithm>
 
 namespace tuple_helper {
 
@@ -68,4 +69,4 @@ constexpr inline size_t sum(const size_t head, const _REST... rest) noexcept {
     return head + sum(rest...);
 }
 
-}  // tuple_helper
+}  // namespace tuple_helper

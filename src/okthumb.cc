@@ -1,12 +1,12 @@
-#include "okthumb.h"
-#include "image_reader.h"
-#include "config.h"
-#include "logging.h"
-#include "resize.h"
+#include "src/okthumb.h"
 #include <string>
+#include "src/image_reader.h"
+#include "src/config.h"
+#include "src/logging.h"
+#include "src/resize.h"
 
 ImgPipeline::ImgPipeline(const std::string& in, const Config& config)
-        : reader_(img::get_reader(in, config.jpeg)), config_(&config){};
+        : reader_(img::get_reader(in, config.jpeg)), config_(&config) {}
 
 const std::string& ImgPipeline::error() const {
     if (reader_) {
@@ -15,7 +15,7 @@ const std::string& ImgPipeline::error() const {
     static const std::string& failed_hdr =
             *new std::string("Failed to recognise the image type");
     return failed_hdr;
-};
+}
 
 const std::string& ImgPipeline::warning() const {
     if (reader_) {
@@ -23,7 +23,7 @@ const std::string& ImgPipeline::warning() const {
     }
     static const std::string& empty = *new std::string();
     return empty;
-};
+}
 
 unsigned int ImgPipeline::src_height() const {
     return (reader_) ? reader_->src_height() : 0;

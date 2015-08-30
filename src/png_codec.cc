@@ -1,16 +1,16 @@
-#include "png_codec.h"
+#include "src/png_codec.h"
 
-#include <iostream>
-#include <sstream>
-// #pragma clang diagnostic ignored "-Wdisabled-macro-expansion"
 extern "C" {
 #define PNG_DEBUG 3
 #include <png.h>
 }
+#include <iostream>
+#include <sstream>
 #include <csetjmp>
 #include <cassert>
-#include "aligned_storage.h"
-#include "logging.h"
+#include <algorithm>
+#include "src/aligned_storage.h"
+#include "src/logging.h"
 
 // Sanity check of our forward declarations
 
@@ -37,7 +37,7 @@ void read_stringbuf(png_structp png_ptr, png_bytep data, png_size_t sz) {
         longjmp(png_jmpbuf(png_ptr), 1);
     }
 }
-}
+}  //  namespace
 
 bool is_png(const std::string &src) {
     if (src.size() < PNGSIGSIZE) {
@@ -219,13 +219,13 @@ class png_string_dest {
     png_string_dest(const png_string_dest &) = delete;
     png_string_dest &operator=(const png_string_dest &) = delete;
     ~png_string_dest() = default;
-    explicit png_string_dest(std::string &dest);
+    explicit png_string_dest(std::string *dest);
     static void write_data(png_structp png_ptr, png_bytep data,
                            png_size_t length);
     static void flush(png_structp png_ptr);
 };
 
-png_string_dest::png_string_dest(std::string &dst) : outstring(&dst), len(0) {
+png_string_dest::png_string_dest(std::string *dst) : outstring(dst), len(0) {
     outstring->resize(4096);
 }
 
@@ -267,7 +267,7 @@ class png_cleaner {
 std::string encode_png(const XRGBImage &src) {
     png_cleaner state;
     std::string retval;
-    png_string_dest dest(retval);
+    png_string_dest dest(&retval);
 
     // Initialize write structure
     state.png =
@@ -277,7 +277,7 @@ std::string encode_png(const XRGBImage &src) {
     if (state.png == nullptr || state.info == nullptr) {
         ERR_LOGGER << "Error during png writer initialisation." << std::endl;
         return std::string();
-    };
+    }
 
     if (setjmp(png_jmpbuf(state.png))) {
         ERR_LOGGER << "Error during png creation" << std::endl;

@@ -1,7 +1,7 @@
 // -*- C++ -*-
 #pragma once
-#include "image.h"
-#include "indice_tuple.h"
+#include "src/image.h"
+#include "src/indice_tuple.h"
 
 using tuple_helper::make_tuple_indices;
 using tuple_helper::tuple_indices;

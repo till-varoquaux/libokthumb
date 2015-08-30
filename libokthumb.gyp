@@ -34,7 +34,7 @@
             'src/webp_codec.cc',
         ],
         'include_dirs': [
-            'src', '<(DEPTH)'
+            '<(DEPTH)'
         ],
         "cflags": [
             "-std=c++11"
@@ -44,7 +44,7 @@
         },
         'direct_dependent_settings': {
             'include_dirs': [
-                'src',
+                '<(DEPTH)',
             ],
             "cflags": [
                 "-std=c++11"
