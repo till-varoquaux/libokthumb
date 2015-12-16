@@ -1,0 +1,77 @@
+#include <fstream>
+#include <cstdlib>
+#include <iostream>
+#include "src/logging.h"
+#include "src/resize.h"
+#include "src/jpeg_codec.h"
+#include "src/image_reader.h"
+#include "src/image.h"
+
+
+// For testing purposes: read a whole file into a std::str
+static bool read_local_file(const std::string &filename, std::string *tgt) {
+    std::ifstream in(filename, std::ios::in);
+    if (in) {
+        in.seekg(0, std::ios::end);
+        const ssize_t sz = in.tellg();
+        tgt->resize(static_cast<size_t>(sz));
+        in.seekg(0, std::ios::beg);
+        in.read(const_cast<char *>(tgt->c_str()), sz);
+        in.close();
+        return true;
+    }
+    return false;
+}
+
+int main(int argc, char **argv) {
+    if (argc != 2) {
+        std::cerr << "Usage: decode FILE" << std::endl;
+        return EXIT_FAILURE;
+    }
+    std::string src, res;
+
+    bool fst = true;
+    const uint32_t tgt_width = 400;
+
+    for (int i = 0; i < 10; ++i) {
+        if (!read_local_file(argv[1], &src)) {
+            std::cerr << "Failed to read file" << std::endl;
+            return EXIT_FAILURE;
+        }
+
+        auto reader = img::get_reader(src);
+
+        if (!reader) {
+            std::cerr << "Failed to read image" << std::endl;
+            return EXIT_FAILURE;
+        }
+
+        if (!reader->ok()) {
+            std::cerr << "failed to read the picture's header: " << reader->error()
+                      << std::endl;
+            return EXIT_FAILURE;
+        }
+
+        reader->set_desired_width(tgt_width);
+
+        Image img = reader->decode();
+
+        const uint32_t tgt_height = (uint64_t(img.height()) * tgt_width) / img.width();
+        if (fst) {
+            INFO_LOGGER << to_string(img.type()) << ":" << img.width() << "x"
+                        << img.height() << std::endl;
+            fst = false;
+        }
+        if (!reader->ok()) {
+            std::cerr << "error while reading image: " << reader->error()
+                      << std::endl;
+            return EXIT_FAILURE;
+        }
+
+        img = resize(img, tgt_width, tgt_height, scale_method::FASTEST);
+
+        res = encode_jpeg(img);
+    }
+    std::cout << res << std::endl;
+    return EXIT_SUCCESS;
+}

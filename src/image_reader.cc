@@ -46,8 +46,10 @@ Image image_reader::decode() {
         return Image();
     }
 
-    unsigned int desired_scale = std::min(dims.width() / dims.dst_width,
-                                          dims.height() / dims.dst_height);
+    unsigned int desired_scale = 1;
+    if (dims.dst_width > 0) {
+        desired_scale = (dims.right_x - dims.left_x) / dims.dst_width;
+    }
 
     if (desired_scale > 1) {
         set_scale(desired_scale);

@@ -49,6 +49,9 @@ class image_reader {
 
     virtual unsigned int scaled_height() const;
 
+    void set_desired_width(unsigned int desired) {
+        dims.dst_width = desired;
+    }
     image_reader() = default;
     explicit image_reader(image_reader &) = delete;
     image_reader &operator=(image_reader &) = delete;

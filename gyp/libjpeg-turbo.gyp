@@ -149,6 +149,7 @@
                                '-I<(src)',
                                '-I<(src)/simd',
                                '-I<(shared_generated_dir)',
+                               '-I<(DEPTH)/config',
                                '-I<(DEPTH)/config/simd',  #mkdir here...
                                '<(src)/simd/jsimdcfg.inc.h',
                                '<@(_outputs)'],

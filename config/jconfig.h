@@ -50,3 +50,6 @@
 #ifndef __CHAR_UNSIGNED__
 # undef __CHAR_UNSIGNED__
 #endif
+
+/* The size of `size_t', as computed by sizeof. */
+#define SIZEOF_SIZE_T 8

@@ -17,6 +17,10 @@
                     '-Wno-c++98-compat-pedantic', '-g',
                     '--system-header-prefix=externals'
                 ],
+            }],
+            ['libokthumb_maint_mode == 0', {
+                'cflags': ['-O3', '-fomit-frame-pointer', '-march=native',
+                           '-mtune=native']
             }]
         ],
         'type': 'static_library',
@@ -44,7 +48,7 @@
         },
         'direct_dependent_settings': {
             'include_dirs': [
-                '<(DEPTH)',
+                '<(DEPTH)', '<(DEPTH)/config'
             ],
             "cflags": [
                 "-std=c++11"
@@ -55,6 +59,15 @@
         'dependencies': ['libokthumb'],
         'type': 'executable',
         'sources': ['bin/decode.cc'],
+        "cflags": [
+            "-std=c++11", "-lpng"
+        ]
+    },
+    {
+        'target_name': 'test_res',
+        'dependencies': ['libokthumb'],
+        'type': 'executable',
+        'sources': ['bin/test_res.cc'],
         "cflags": [
             "-std=c++11", "-lpng"
         ]

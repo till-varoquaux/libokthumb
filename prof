@@ -1,0 +1,2 @@
+/usr/lib/linux-tools-4.2.0-19/perf record -F 2000 out/Default/test_res Chess_Large.JPG > res.jpg
+/usr/lib/linux-tools-4.2.0-19/perf report

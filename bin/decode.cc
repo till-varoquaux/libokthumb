@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
 
     if (!reader->ok()) {
         std::cerr << "failed to read the picture's header: " << reader->error()
-                   << std::cerr;
+                  << std::endl;
         return EXIT_FAILURE;
     }
 

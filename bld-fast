@@ -1,0 +1,4 @@
+#!/bin/bash
+set -e -u -o pipefail
+CXX=clang++ CC=clang ./gyp_okthumb --depth=. -Dlibokthumb_maint_mode=0 && make -j1 V=1
+time out/Default/test_res nighttime-lasilla-jfs.jpg > out.jpg
