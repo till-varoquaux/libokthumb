@@ -1,3 +1,4 @@
+# -*- mode: python; tab-width: 2; python-indent: 2; indent-tabs-mode: nil; -*-
 # Based on:
 # https://code.google.com/p/chromium/codesearch#chromium/src/third_party/libjpeg_turbo/libjpeg.gyp
 # Copyright (c) 2012 The Chromium Authors. All rights reserved.
@@ -12,6 +13,14 @@
         'src': '<(DEPTH)/externals/libjpeg-turbo'
     },
     'targets': [
+        {
+        'target_name': 'jpegtran',
+        'dependencies': ['libokthumb'],
+        'type': 'executable',
+        'sources': ['<(src)/jpegtran.c'],
+        'dependencies': ["libjpeg-turbo"],
+        "cflags": [
+        ]},
         {
             'target_name': 'libjpeg-turbo',
             'type': 'static_library',
@@ -90,6 +99,9 @@
                 '<(src)/jquant2.c',
                 '<(src)/jutils.c',
                 '<(src)/jversion.h',
+                '<(src)/transupp.c',
+                '<(src)/cdjpeg.c',
+                '<(src)/rdswitch.c'
             ],
             'conditions': [
                 # Add target-specific source files.
