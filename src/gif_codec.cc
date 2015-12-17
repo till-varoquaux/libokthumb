@@ -90,7 +90,7 @@ unsigned int gif_reader::src_height() const {
     return static_cast<unsigned int>(gif_img.ImageDesc.Height);
 }
 
-Image gif_reader::decode_impl(dim_t dims) {
+Image gif_reader::decode_impl() {
     const SavedImage &gif_img = gif->SavedImages[0];
 
     /* Lets dump it - set the global variables required and do it: */
@@ -108,7 +108,7 @@ Image gif_reader::decode_impl(dim_t dims) {
     for (unsigned int i = 0; i < dims.height(); i++) {
         ARGBPixel *row = res.row<0>(i);
         const GifByteType *src =
-                &gif_img.RasterBits[(dims.top_y + i) * scaled_width() +
+                &gif_img.RasterBits[(dims.top_y + i) * src_width() +
                                     dims.left_x];
         for (unsigned int j = 0; j < dims.width(); j++) {
             auto ColorMapEntry = &ColorMap->Colors[src[j]];

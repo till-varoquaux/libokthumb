@@ -32,7 +32,7 @@ struct ImgPipeline {
               unsigned int right_x = 0,    // 0 means right edge
               unsigned int bottom_y = 0);  // 0 means bottom edge
 
-    void resize(unsigned int width, unsigned int height);
+    void resize(unsigned int width);
 
     // Run should take a dst type with a `virtual void set_size(unsigned)` and
     // `const char* data()` and write to it

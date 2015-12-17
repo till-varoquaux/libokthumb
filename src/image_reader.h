@@ -13,9 +13,9 @@ class image_reader {
 
     friend struct ImgPipeline;
 
-   public:
+   protected:
     struct dim_t {
-        unsigned int dst_width = 0, dst_height = 0, left_x = 0, top_y = 0,
+        unsigned int dst_width = 0, left_x = 0, top_y = 0,
                      right_x = 0,  // 0 means right edge
                 bottom_y = 0;      // 0 means bottom edge
         ColorSpace desired_color_space = ColorSpace::YUV420;
@@ -23,15 +23,10 @@ class image_reader {
         unsigned int height() const { return bottom_y - top_y; }
     } dims;
 
-   protected:
     void set_error(std::string &&);
     void set_warning(std::string &&);
 
-    virtual Image decode_impl(const dim_t dims) = 0;
-
-    virtual void set_scale(unsigned int);
-    virtual unsigned int get_scale() const;
-
+    virtual Image decode_impl() = 0;
    public:
     enum img_type { JPEG, GIF, PNG };
 
@@ -45,13 +40,10 @@ class image_reader {
 
     virtual unsigned int src_height() const = 0;
 
-    virtual unsigned int scaled_width() const;
-
-    virtual unsigned int scaled_height() const;
-
     void set_desired_width(unsigned int desired) {
         dims.dst_width = desired;
     }
+
     image_reader() = default;
     explicit image_reader(image_reader &) = delete;
     image_reader &operator=(image_reader &) = delete;

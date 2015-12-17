@@ -157,25 +157,25 @@ png_reader::png_reader(const std::string &src)
     }
 }
 
-ARGBPixel *png_reader::src_line_buf(const dim_t) {
-    if (src_line_buf_.is_empty()) src_line_buf_.alloc(scaled_width());
+ARGBPixel *png_reader::src_line_buf() {
+    if (src_line_buf_.is_empty()) src_line_buf_.alloc(src_width());
     return src_line_buf_.ptr();
 }
 
-void png_reader::JunkLines(const dim_t dims) noexcept {
+void png_reader::junk_lines() noexcept {
     if (dims.top_y == 0) {
         return;
     }
     unsigned char *scratch =
-            reinterpret_cast<unsigned char *>(src_line_buf(dims));
+            reinterpret_cast<unsigned char *>(src_line_buf());
 
     for (unsigned int i = 0; i < dims.top_y; i++) {
         png_read_row(png_, scratch, nullptr);
     }
 }
 
-void png_reader::ReadLines(const dim_t dims) noexcept {
-    if (scaled_width() == dims.width()) {
+void png_reader::read_lines() noexcept {
+    if (src_width() == dims.width()) {
         for (unsigned int i = 0; i < dims.height(); i++) {
             png_read_row(png_,
                          reinterpret_cast<unsigned char *>(tmp_img_.row<0>(i)),
@@ -183,7 +183,7 @@ void png_reader::ReadLines(const dim_t dims) noexcept {
         }
 
     } else {
-        ARGBPixel *scratch = src_line_buf(dims);
+        ARGBPixel *scratch = src_line_buf();
 
         for (unsigned int i = 0; i < dims.height(); i++) {
             png_read_row(png_, reinterpret_cast<unsigned char *>(scratch),
@@ -194,7 +194,7 @@ void png_reader::ReadLines(const dim_t dims) noexcept {
     }
 }
 
-Image png_reader::decode_impl(const dim_t dims) {
+Image png_reader::decode_impl() {
     // Setup the error handling.
     if (setjmp(png_jmpbuf(png_)) != 0) {
         set_error("Failed to read image body.");
@@ -203,8 +203,8 @@ Image png_reader::decode_impl(const dim_t dims) {
 
     tmp_img_ = XRGBImage(dims.width(), dims.height());
 
-    JunkLines(dims);
-    ReadLines(dims);
+    junk_lines();
+    read_lines();
     return Image(std::move(tmp_img_));
 }
 

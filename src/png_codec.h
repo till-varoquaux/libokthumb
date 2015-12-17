@@ -23,12 +23,12 @@ class png_reader final : public image_reader {
     Aligned<ARGBPixel> src_line_buf_;
     XRGBImage tmp_img_;
 
-    ARGBPixel *src_line_buf(const dim_t dims);
+    ARGBPixel *src_line_buf();
 
-    Image decode_impl(const dim_t dims) final;
+    Image decode_impl() final;
 
-    void JunkLines(const dim_t dims) noexcept;
-    void ReadLines(const dim_t dims) noexcept;
+    void junk_lines() noexcept;
+    void read_lines() noexcept;
 
    public:
     img_type file_type() const final { return PNG; }

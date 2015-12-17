@@ -111,7 +111,7 @@ jpeg_reader::jpeg_reader(const std::string &src, const config::jpeg &config) {
     jpeg_calc_output_dimensions(&dinfo_);
 }
 
-void jpeg_reader::set_scale(unsigned int wanted) {
+unsigned int jpeg_reader::set_scale(unsigned int wanted) {
     if (wanted >= 8) {
         dinfo_.scale_denom = 8;
     } else if (wanted >= 4) {
@@ -120,9 +120,8 @@ void jpeg_reader::set_scale(unsigned int wanted) {
         dinfo_.scale_denom = 2;
     }
     jpeg_calc_output_dimensions(&dinfo_);
+    return dinfo_.scale_denom;
 }
-
-unsigned int jpeg_reader::get_scale() const { return dinfo_.scale_denom; }
 
 jpeg_reader::~jpeg_reader() { jpeg_destroy_decompress(&dinfo_); }
 
@@ -323,7 +322,7 @@ src_colorspace colorspace(const struct jpeg_decompress_struct &dinfo) {
 // Planar decoding
 
 template <typename _IMG>
-Image jpeg_reader::planar_decode(dim_t const dims) {
+Image jpeg_reader::planar_decode() {
     _IMG res(dims.width(), dims.height());
     dinfo_.raw_data_out = true;
 
@@ -331,7 +330,7 @@ Image jpeg_reader::planar_decode(dim_t const dims) {
             static_cast<int>(DCTSIZE * dinfo_.scale_num / dinfo_.scale_denom);
 
     encdec_helper_t<_IMG> dh;
-    _IMG scratchbuff(scaled_width(), dh.height);
+    _IMG scratchbuff(dinfo_.output_width, dh.height);
     dh.fill_rows(&scratchbuff, 0);
     if (setjmp(jmp_buffer_)) {
         return Image();
@@ -390,7 +389,7 @@ Image jpeg_reader::planar_decode(dim_t const dims) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Image jpeg_reader::fancy_decode(const dim_t dims) {
+Image jpeg_reader::fancy_decode() {
     Image res;
 
     dinfo_.out_color_space = PACKED_XRGB;
@@ -399,7 +398,7 @@ Image jpeg_reader::fancy_decode(const dim_t dims) {
     XRGBImage *rgbx = res.val<ColorSpace::XRGB>();
 
     Aligned<unsigned char> src_line_buf(
-            scaled_width() * static_cast<uint>(dinfo_.output_components));
+            dinfo_.output_width * static_cast<uint>(dinfo_.output_components));
 
     JSAMPROW outbuf[1] = {src_line_buf.ptr()};
 
@@ -434,17 +433,27 @@ Image jpeg_reader::fancy_decode(const dim_t dims) {
     return res;
 }
 
-Image jpeg_reader::decode_impl(const dim_t dims) {
+Image jpeg_reader::decode_impl() {
+    if (dims.dst_width > 0) {
+        const unsigned int scale =
+                set_scale((dims.right_x - dims.left_x) / dims.dst_width);
+
+        dims.left_x = dims.left_x / scale;
+        dims.top_y = dims.top_y / scale;
+        dims.right_x = dims.right_x / scale;
+        dims.bottom_y = dims.bottom_y / scale;
+    }
+
     switch (colorspace(dinfo_)) {
         case YUV420:
-            return planar_decode<Yuv420Image>(dims);
+            return planar_decode<Yuv420Image>();
         case GRAYSCALE:
-            return planar_decode<GrayscaleImage>(dims);
+            return planar_decode<GrayscaleImage>();
         case YUV444:
-            return planar_decode<Yuv444Image>(dims);
+            return planar_decode<Yuv444Image>();
         case RGB:
         case UNKNOWN:
-            return fancy_decode(dims);
+            return fancy_decode();
     }
 }
 

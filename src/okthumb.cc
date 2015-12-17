@@ -4,6 +4,10 @@
 #include "src/config.h"
 #include "src/logging.h"
 #include "src/resize.h"
+#include "src/jpeg_codec.h"
+#include "src/webp_codec.h"
+#include "src/ppm_codec.h"
+
 
 ImgPipeline::ImgPipeline(const std::string& in, const Config& config)
         : reader_(img::get_reader(in, config.jpeg)), config_(&config) {}
@@ -43,10 +47,9 @@ void ImgPipeline::crop(unsigned int left_x, unsigned int top_y,
     }
 }
 
-void ImgPipeline::resize(unsigned int width, unsigned int height) {
+void ImgPipeline::resize(unsigned int width) {
     if (reader_) {
         reader_->dims.dst_width = width;
-        reader_->dims.dst_height = height;
     }
 }
 
@@ -68,17 +71,27 @@ std::string ImgPipeline::run(file_type f) {
                     << reader_->warning() << std::endl;
     }
 
-    if (img.width() != reader_->dims.dst_width ||
-        img.height() != reader_->dims.dst_height) {
-        img = ::resize(img, reader_->dims.dst_width, reader_->dims.dst_height,
+    if (img.width() != reader_->dims.dst_width) {
+        const uint32_t tgt_height = static_cast<uint32_t>(
+                (uint64_t(img.height()) * reader_->dims.dst_width) /
+                img.width());
+
+        img = ::resize(img, reader_->dims.dst_width, tgt_height,
                        scale_method(config_->resize.scale_method.val()));
 
         if (img.is_empty()) {
             INFO_LOGGER << " failed to resize image" << std::endl;
             return std::string();
         }
+        assert(img.width() == reader_->dims.dst_width &&
+               img.height() == tgt_height);
     }
-    assert(img.width() == reader_->dims.dst_width &&
-           img.height() == reader_->dims.dst_height);
-    return std::string();
+    switch (f) {
+    case file_type::JPEG:
+        return encode_jpeg(img, config_->jpeg);
+    case file_type::PPM:
+        return encode_ppm(img);
+    case file_type::WEBP:
+        return encode_webp(img, config_->jpeg.quality);
+    }
 }

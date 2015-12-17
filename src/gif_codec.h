@@ -13,7 +13,7 @@ class gif_reader final : public image_reader {
     std::stringbuf sbuf;
     GifFileType *gif;
 
-    Image decode_impl(dim_t dims) final;
+    Image decode_impl() final;
 
    public:
     unsigned int src_width() const final;
