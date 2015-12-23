@@ -7,10 +7,13 @@
 #include "src/jpeg_codec.h"
 #include "src/webp_codec.h"
 #include "src/ppm_codec.h"
-
+// TODO: jpeg-xr, jpeg2000
+// http://www.useragentman.com/blog/2015/01/14/using-webp-jpeg2000-jpegxr-apng-now-with-picturefill-and-modernizr/
 
 ImgPipeline::ImgPipeline(const std::string& in, const Config& config)
         : reader_(img::get_reader(in, config.jpeg)), config_(&config) {}
+
+ImgPipeline::~ImgPipeline() {};
 
 const std::string& ImgPipeline::error() const {
     if (reader_) {

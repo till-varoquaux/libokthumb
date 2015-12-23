@@ -22,6 +22,7 @@ struct ImgPipeline {
     const std::string &warning() const;
 
     ImgPipeline(const std::string &, const Config &);
+    ~ImgPipeline();
     // TODO: take a const char* and a length
 
     unsigned int src_height() const;

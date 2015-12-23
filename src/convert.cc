@@ -38,6 +38,7 @@
 //   width, height)
 // This templatizes a lot of that boilerplate code...
 
+// Get the ARGB pack and unpack functions from libwebp (src/dsp/argb.c)
 template <size_t N>
 struct GetDataOp {
     template <typename _T>

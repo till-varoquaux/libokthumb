@@ -297,7 +297,6 @@ src_colorspace colorspace(const struct jpeg_decompress_struct &dinfo) {
             if (encdec_helper_t<Yuv420Image>::matches_subsampling(dinfo))
                 return YUV420;
             if (encdec_helper_t<Yuv444Image>::matches_subsampling(dinfo)) {
-                INFO_LOGGER << "YUV444" << std::endl;
                 return YUV444;
             }
 
@@ -438,10 +437,12 @@ Image jpeg_reader::decode_impl() {
         const unsigned int scale =
                 set_scale((dims.right_x - dims.left_x) / dims.dst_width);
 
+        unsigned int scaled_width = (dims.right_x - dims.left_x) / scale;
+        unsigned int scaled_height = (dims.bottom_y - dims.top_y) / scale;
         dims.left_x = dims.left_x / scale;
         dims.top_y = dims.top_y / scale;
-        dims.right_x = dims.right_x / scale;
-        dims.bottom_y = dims.bottom_y / scale;
+        dims.right_x = dims.left_x + scaled_width;
+        dims.bottom_y = dims.top_y + scaled_height;
     }
 
     switch (colorspace(dinfo_)) {
