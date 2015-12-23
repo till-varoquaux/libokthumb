@@ -7,8 +7,9 @@
         'target_name': 'libokthumb',
         'dependencies': [
             'gyp/libjpeg-turbo.gyp:libjpeg-turbo', 'gyp/giflib.gyp:giflib',
-            'externals/libyuv/libyuv.gyp:libyuv', 'gyp/libwebp.gyp:*'
-        ],
+            'externals/libyuv/libyuv.gyp:libyuv',
+            'gyp/libwebp.gyp:libwebp'
+         ],
         'conditions': [
             ['libokthumb_maint_mode == 1', {
                 'cflags': [
